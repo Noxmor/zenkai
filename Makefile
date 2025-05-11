@@ -4,6 +4,8 @@ SRC_DIR := src
 BIN_DIR := bin
 OBJ_DIR := bin-int
 
+PREFIX ?= /usr/local
+
 CFLAGS_COMMON := -Wall -Wextra -I./include
 CFLAGS_DEBUG := -g -O0 -DZK_ENABLE_ASSERTS
 CFLAGS_RELEASE := -O3 -DNDEBUG
@@ -14,7 +16,7 @@ SRC := $(shell find $(SRC_DIR) -type f -name '*.c')
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/$(CFG)/%.o,$(SRC))
 TARGET := zenkai
 
-.PHONY: all debug release build clean
+.PHONY: all debug release build install clean
 
 all: debug
 
@@ -33,6 +35,11 @@ $(BIN_DIR)/$(CFG)/$(TARGET): $(OBJ)
 $(OBJ_DIR)/$(CFG)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+install: release
+	sudo install -m 755 $(BIN_DIR)/release/$(TARGET) $(PREFIX)/bin/
+	sudo mkdir -p $(PREFIX)/share/$(TARGET)
+	sudo cp -r rules $(PREFIX)/share/$(TARGET)
 
 clean:
 	rm -rf $(BIN_DIR) $(OBJ_DIR)
