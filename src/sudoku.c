@@ -103,6 +103,8 @@ static char* read_file(const char* filepath)
     return data;
 }
 
+static bool sudoku_rule_is_unloaded(const Sudoku* sdk, const char* rule);
+
 static void sudoku_add_rule(Sudoku* sdk, Rule rule)
 {
     ZK_ASSERT(sudoku_rule_is_unloaded(sdk, rule.name));
